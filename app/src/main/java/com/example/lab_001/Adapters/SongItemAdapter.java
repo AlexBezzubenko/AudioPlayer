@@ -40,7 +40,6 @@ public class SongItemAdapter extends ArrayAdapter<Song> {
 
         TextView tvArtist = (TextView) convertView.findViewById(R.id.Artist_textView);
         TextView tvTitle = (TextView) convertView.findViewById(R.id.Title_textView);
-        TextView tvGenre = (TextView) convertView.findViewById(R.id.Genre_textView);
 
         TextView tvDuration = (TextView) convertView.findViewById(R.id.Duration_textView);
 
@@ -69,7 +68,6 @@ public class SongItemAdapter extends ArrayAdapter<Song> {
         }
 
 
-        tvGenre.setText(song.Genre);
         //--------Genre
 
         ImageView imageView = (ImageView)convertView.findViewById(R.id.image_view);

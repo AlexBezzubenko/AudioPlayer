@@ -41,7 +41,6 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
             holder = new ViewHolder();
             holder.tvArtist = (TextView) convertView.findViewById(R.id.Artist_textView);
             holder.tvTitle = (TextView) convertView.findViewById(R.id.Title_textView);
-            holder.tvGenre = (TextView) convertView.findViewById(R.id.Genre_textView);
             holder.tvDuration = (TextView) convertView.findViewById(R.id.Duration_textView);
 
             holder.imageView = (ImageView) convertView.findViewById(R.id.image_view);
@@ -51,7 +50,7 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        if (song.Artist.equals(new String("<unknown>"))){
+        /*if (song.Artist.equals(new String("<unknown>"))){
             String[] s = song.Title.split("-");
             if (s.length == 2){
                 setShortString(holder.tvArtist, s[0].trim());
@@ -65,7 +64,10 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
         else {
             setShortString(holder.tvArtist, song.Artist);
             setShortString(holder.tvTitle, song.Title);
-        }
+        }*/
+
+        setShortString(holder.tvArtist, song.Artist);
+        setShortString(holder.tvTitle, song.Title);
         if (song.Duration != null) {
             int ms = Integer.parseInt(song.Duration);
             double seconds = ms / 1000;
@@ -75,8 +77,6 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
             holder.tvDuration.setText("--:--");
         }
 
-
-        holder.tvGenre.setText(song.Genre);
 
         holder.position = position;
         new ThumbnailTask(position, song.Data, holder)
@@ -139,7 +139,6 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
     private static class ViewHolder {
         public TextView tvArtist;
         public TextView tvTitle;
-        public TextView tvGenre;
         public TextView tvDuration;
 
         public ImageView imageView;

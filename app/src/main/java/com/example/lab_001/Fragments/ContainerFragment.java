@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class ContainerFragment extends Fragment {
     ArrayList<Song> songsList = new ArrayList<>();
 
-    SongListFragment songListFragment;
+    public SongListFragment songListFragment;
     PlaySongFragment playSongFragment;
 
     private final static String TAG_PLAY = "songListActivity";

@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.lab_001.Adapters.AudioPlayerPagerAdapter;
 import com.example.lab_001.Fragments.ContainerFragment;
@@ -116,7 +118,8 @@ public class MainActivity extends FragmentActivity {
 
     public void selectGenre(String genreName){
         viewPager.setCurrentItem(1);
-        containerFragment.setSongsList(songManager.getPlayListByGenre(mSqLiteDatabase, genreName));
+        songsList = songManager.getPlayListByGenre(mSqLiteDatabase, genreName);
+        containerFragment.setSongsList(songsList);
     }
 
     public void playSong(Song song){
@@ -139,6 +142,29 @@ public class MainActivity extends FragmentActivity {
                 break;
         }
         //fragmentTransaction.commit();
+    }
+
+    private static final int CM_DELETE_ID = 1;
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, CM_DELETE_ID, 0, "Delete");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == CM_DELETE_ID) {
+            // получаем инфу о пункте списка
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+            containerFragment.songListFragment.songsList.remove(acmi.position);
+
+            containerFragment.songListFragment.songAdapter.notifyDataSetChanged();
+            return true;
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override

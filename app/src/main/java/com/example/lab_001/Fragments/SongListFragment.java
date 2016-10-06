@@ -23,10 +23,11 @@ import com.example.lab_001.core.Song;
 import java.util.ArrayList;
 
 public class SongListFragment extends Fragment {
-    ArrayList<Song> songsList = new ArrayList<>();
+    public ArrayList<Song> songsList = new ArrayList<>();
     ListView songListView;
     LayoutInflater inflater;
     View _rootView;
+    public SongItemAdapterCached songAdapter;
 
     public SongListFragment(){
         super();
@@ -47,8 +48,9 @@ public class SongListFragment extends Fragment {
 
             if (songsList != null) {
                 //SongItemAdapter songAdapter = new SongItemAdapter(inflater.getContext(), songsList);
-                SongItemAdapterCached songAdapter = new SongItemAdapterCached(inflater.getContext(), songsList);
+                songAdapter = new SongItemAdapterCached(inflater.getContext(), songsList);
                 songListView.setAdapter(songAdapter);
+                registerForContextMenu(songListView);
 
                 songListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view,
@@ -82,8 +84,12 @@ public class SongListFragment extends Fragment {
 
     public void setSongList(ArrayList<Song> songsList){
         if (songsList != null) {
-            SongItemAdapterCached songAdapter = new SongItemAdapterCached(inflater.getContext(), songsList);
-            songListView.setAdapter(songAdapter);
+            //SongItemAdapterCached songAdapter = new SongItemAdapterCached(inflater.getContext(), songsList);
+            this.songsList.clear();
+            this.songsList.addAll(songsList);
+
+            songAdapter.notifyDataSetChanged();
+            //songListView.setAdapter(songAdapter);
         }
     }
 }
