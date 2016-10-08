@@ -122,6 +122,10 @@ public class MainActivity extends FragmentActivity {
         containerFragment.setSongsList(songsList);
     }
 
+    public void setHeader(Song song){
+        containerFragment.songListFragment.setHeader(song);
+    }
+
     public void playSong(Song song){
         containerFragment.playSong(song);
     }

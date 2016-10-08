@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.lab_001.MainActivity;
 import com.example.lab_001.R;
 import com.example.lab_001.core.Song;
 
@@ -133,6 +134,7 @@ public class PlaySongFragment extends Fragment {
 
     public void onDetach() {
         super.onDetach();
+        ((MainActivity) getActivity()).setHeader(song);
         Log.d(LOG_TAG, "PlayFragment onDetach");
     }
 
