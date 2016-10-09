@@ -4,7 +4,10 @@ package com.example.lab_001.Fragments;
  * Created by Александр on 05.10.2016.
  */
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,6 +28,9 @@ import com.example.lab_001.core.Song;
 import java.util.ArrayList;
 
 public class SongListFragment extends Fragment {
+    private static Song lastSong;
+    private boolean isHeaderAdded = false;
+
     public ArrayList<Song> songsList = new ArrayList<>();
     ListView songListView;
     LayoutInflater inflater;
@@ -47,8 +53,8 @@ public class SongListFragment extends Fragment {
             this.inflater = inflater;
 
             songListView = (ListView)_rootView.findViewById(R.id.songs_list_view);
-            header = inflater.inflate(R.layout.item, null);
-            songListView.addHeaderView(header, null, false);
+
+            header = inflater.inflate(R.layout.header, null);
 
             if (songsList != null) {
                 //SongItemAdapter songAdapter = new SongItemAdapter(inflater.getContext(), songsList);
@@ -60,15 +66,22 @@ public class SongListFragment extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
                         Song song = (Song) songListView.getItemAtPosition(position);
-                        Log.d("ME", "" + song.Title);
-                        Log.d("ME", "" + song.Artist);
-                        Log.d("ME", "" + song.Data);
+                        Log.d("pos", "getItem" + position);
 
                         if (song != null)
-                            ((MainActivity) getActivity()).playSong(song);
+                            ((MainActivity) getActivity()).playSong(song, position, songsList);
                     }
                 });
             }
+
+            header.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (lastSong != null)
+                        ((MainActivity) getActivity()).playSong(lastSong, 0, null);
+                }
+            });
+
             Drawable background = songListView.getBackground();
             background.setAlpha(50);
         } else {
@@ -86,11 +99,16 @@ public class SongListFragment extends Fragment {
     }
 
     public void setHeader(Song song){
-        TextView tvArtist = (TextView) header.findViewById(R.id.Artist_textView);
-        TextView tvTitle = (TextView) header.findViewById(R.id.Title_textView);
-        TextView tvDuration = (TextView) header.findViewById(R.id.Duration_textView);
+        if (!isHeaderAdded) {
+            songListView.addHeaderView(header, null, false);
+            isHeaderAdded = true;
+        }
+        lastSong = song;
+        TextView tvArtist = (TextView) header.findViewById(R.id.h_Artist_textView);
+        TextView tvTitle = (TextView) header.findViewById(R.id.h_Title_textView);
+        TextView tvDuration = (TextView) header.findViewById(R.id.h_Duration_textView);
 
-        ImageView imageView = (ImageView) header.findViewById(R.id.image_view);
+        ImageView imageView = (ImageView) header.findViewById(R.id.h_image_view);
 
         tvArtist.setText(song.Artist);
         tvTitle.setText(song.Title);
@@ -102,8 +120,20 @@ public class SongListFragment extends Fragment {
         else {
             tvDuration.setText("--:--");
         }
-        imageView.setImageResource(R.mipmap.ic_launcher);
 
+        MediaMetadataRetriever metadataRetriever;
+        byte[] art;
+
+        metadataRetriever = new MediaMetadataRetriever();
+        metadataRetriever.setDataSource(song.Data);
+
+        try {
+            art = metadataRetriever.getEmbeddedPicture();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            imageView.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            imageView.setImageResource(R.mipmap.ic_launcher);
+        }
     }
     public void setSongList(ArrayList<Song> songsList){
         if (songsList != null) {

@@ -39,11 +39,14 @@
                     android:textColor="#000000"/>
             </LinearLayout>
         </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#FFFFFF"></LinearLayout>
         <ImageView
             android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="420dp"
+            android:layout_height="410dp"
             android:background="#FF00FF"
             android:scaleType="centerCrop"
             android:id="@+id/play_song_image_view"
@@ -53,25 +56,35 @@
         android:layout_height="fill_parent"
         android:layout_weight="5"
         android:orientation="horizontal"
-        android:layout_margin="20dp">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+        android:background="#FFFFFF"
+        >
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:id="@+id/prev_button"
-            android:text="previous"/>
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@null"
+            android:src="@drawable/prev_b"
+            />
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:id="@+id/play_button"
-            android:layout_weight="1"
-            android:text="play"/>
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:background="@null"
+            android:src="@drawable/play_b"/>
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:id="@+id/next_button"
-            android:text="next"/>
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:src="@drawable/next_b"/>
     </LinearLayout>
 
 </LinearLayout>

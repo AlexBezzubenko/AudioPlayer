@@ -71,7 +71,17 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
         if (song.Duration != null) {
             int ms = Integer.parseInt(song.Duration);
             double seconds = ms / 1000;
-            holder.tvDuration.setText("" + (int) (seconds / 60) + ":" + (int) (seconds % 60));
+
+            int modSec = (int)(seconds % 60);
+
+            String sSeconds;
+
+            if (modSec > 10)
+                sSeconds = "" + modSec;
+            else
+                sSeconds = "0" + modSec;
+
+            holder.tvDuration.setText("" + (int) (seconds / 60) + ":" + sSeconds);
         }
         else {
             holder.tvDuration.setText("--:--");

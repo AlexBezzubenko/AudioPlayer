@@ -126,8 +126,8 @@ public class MainActivity extends FragmentActivity {
         containerFragment.songListFragment.setHeader(song);
     }
 
-    public void playSong(Song song){
-        containerFragment.playSong(song);
+    public void playSong(Song song, int position, ArrayList<Song> songsList){
+        containerFragment.playSong(song, position, songsList);
     }
 
     public void onClick(View v) {

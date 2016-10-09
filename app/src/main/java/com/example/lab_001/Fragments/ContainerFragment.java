@@ -49,8 +49,8 @@ public class ContainerFragment extends Fragment {
     }
 
 
-    public void playSong(Song song) {
-            playSongFragment = new PlaySongFragment(song);
+    public void playSong(Song song, int position, ArrayList<Song> songsList) {
+            playSongFragment = new PlaySongFragment(song, position, songsList);
             transaction = getFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_songs, playSongFragment);
             transaction.addToBackStack(null);
