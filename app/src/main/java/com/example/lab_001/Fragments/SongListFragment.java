@@ -68,8 +68,12 @@ public class SongListFragment extends Fragment {
                         Song song = (Song) songListView.getItemAtPosition(position);
                         Log.d("pos", "getItem" + position);
 
-                        if (song != null)
-                            ((MainActivity) getActivity()).playSong(song, position, songsList);
+                        if (song != null) {
+                            if (isHeaderAdded)
+                                ((MainActivity) getActivity()).playSong(song, position - 1, songsList);
+                            else
+                                ((MainActivity) getActivity()).playSong(song, position, songsList);
+                        }
                     }
                 });
             }
