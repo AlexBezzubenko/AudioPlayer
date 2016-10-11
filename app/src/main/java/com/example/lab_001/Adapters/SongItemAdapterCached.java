@@ -22,10 +22,13 @@ import java.util.ArrayList;
 
 import com.example.lab_001.R;
 import com.example.lab_001.core.Song;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 
 public class SongItemAdapterCached extends ArrayAdapter<Song> {
-    Context context;
+    private static Context context;
     public SongItemAdapterCached(Context context, ArrayList<Song> songs) {
         super(context, 0, songs);
         this.context = context;
@@ -136,12 +139,24 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
         @Override
         protected void onPostExecute(Object o) {
             if (mHolder.position == mPosition) {
+                Picasso.with(context).setIndicatorsEnabled(true);
                 if (!error) {
                     mHolder.imageView.setImageBitmap(bitmap);
                     mHolder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 }
-                else
-                    mHolder.imageView.setImageResource(R.mipmap.ic_launcher);
+                else {
+                    String myCloud = "http://res.cloudinary.com/dyuwhmiwj/image/upload/v1476200292/default_album_cefhqf.jpg";
+                    String noCachePath = "https://pixabay.com/static/uploads/photo/2016/06/01/09/21/music-1428660_960_720.jpg";
+                    Picasso.with(context).load(noCachePath)
+                    .resize(50, 50).error(R.mipmap.ic_launcher).networkPolicy(NetworkPolicy.NO_CACHE,
+                            NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mHolder.imageView);
+
+
+                    //Picasso.with(context).load(R.mipmap.ic_launcher).into(mHolder.imageView);
+
+                    //mHolder.imageView.setImageResource(R.mipmap.ic_launcher);
+                }
+
             }
         }
     }

@@ -6,6 +6,7 @@ package com.example.lab_001.Fragments;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -29,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.lab_001.BackgroundAudioService;
 import com.example.lab_001.MainActivity;
 import com.example.lab_001.R;
 import com.example.lab_001.core.Song;
@@ -74,6 +76,8 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
 
     static MediaPlayer mediaPlayer = new MediaPlayer();
+    private Intent playbackServiceIntent;
+
 
     public PlaySongFragment(){
         super();
@@ -82,7 +86,23 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         this.song = song;
         this.songsList = songsList;
         this.position = position;
+
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "PlayFragment onCreate");
+        playbackServiceIntent = new Intent(getActivity(),
+                BackgroundAudioService.class);
+        
+        //startService(playbackServiceIntent);
+
+    }
+
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -439,10 +459,9 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         super.onAttach(activity);
         Log.d(LOG_TAG, "PlayFragment onAttach");
     }
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(LOG_TAG, "PlayFragment onCreate");
-    }
+
+
+
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(LOG_TAG, "PlayFragment onActivityCreated");
