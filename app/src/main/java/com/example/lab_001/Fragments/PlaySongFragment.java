@@ -4,51 +4,47 @@ package com.example.lab_001.Fragments;
  * Created by Александр on 05.10.2016.
  */
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.graphics.PorterDuff;
-import android.graphics.RectF;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.TextView;
+        import android.app.Activity;
+        import android.content.Intent;
+        import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
+        import android.graphics.Matrix;
+        import android.graphics.PointF;
+        import android.graphics.PorterDuff;
+        import android.media.MediaMetadataRetriever;
+        import android.media.MediaPlayer;
+        import android.os.Bundle;
+        import android.os.Handler;
+        import android.support.v4.app.Fragment;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.MotionEvent;
+        import android.view.View;
+        import android.view.View.OnTouchListener;
+        import android.view.ViewGroup;
+        import android.view.animation.AlphaAnimation;
+        import android.widget.ImageButton;
+        import android.widget.ImageView;
+        import android.widget.SeekBar;
+        import android.widget.TextView;
 
-import com.example.lab_001.BackgroundAudioService;
-import com.example.lab_001.MainActivity;
-import com.example.lab_001.R;
-import com.example.lab_001.core.Song;
+        import com.example.lab_001.BackgroundSoundService;
+        import com.example.lab_001.MainActivity;
+        import com.example.lab_001.R;
+        import com.example.lab_001.core.Song;
 
-import java.util.ArrayList;
-
-import javax.xml.datatype.Duration;
+        import java.util.ArrayList;
 
 
 public class PlaySongFragment extends Fragment implements OnTouchListener, View.OnClickListener {
     private Matrix matrix = new Matrix();
     private Matrix savedMatrix = new Matrix();
-// we can be in one of these 3 states
+    // we can be in one of these 3 states
     private static final int NONE = 0;
     private static final int DRAG = 1;
     private static final int ZOOM = 2;
     private int mode = NONE;
-// remember some things for zooming
+    // remember some things for zooming
     private PointF start = new PointF();
     private PointF mid = new PointF();
     private float oldDist = 1f;
@@ -73,11 +69,9 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     private SeekBar seekBar;
     Handler seekHandler = new Handler();
 
+    MainActivity activity = (MainActivity)getActivity();
+
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
-
-    static MediaPlayer mediaPlayer = new MediaPlayer();
-    private Intent playbackServiceIntent;
-
 
     public PlaySongFragment(){
         super();
@@ -92,14 +86,7 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "PlayFragment onCreate");
-        playbackServiceIntent = new Intent(getActivity(),
-                BackgroundAudioService.class);
-        
-        //startService(playbackServiceIntent);
-
     }
 
 
@@ -123,9 +110,9 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //seekBar.setProgress(progress);
+                seekBar.setProgress(progress);
                 if (fromUser) {
-                    mediaPlayer.seekTo(progress);
+                    activity.seekTo(progress);
                 }
             }
 
@@ -140,16 +127,14 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
             }
         });
 
-        setSong(song, true);
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        /*mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
             @Override
             public void onCompletion(MediaPlayer mp) {
                 nextSong();
             }
 
-        });
+        });*/
 
         playButton = (ImageButton)view.findViewById(R.id.play_button);
         ImageButton nextButton = (ImageButton)view.findViewById(R.id.next_button);
@@ -163,6 +148,7 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
 
+        setSong(song, true);
         seekUpdation();
 
         return view;
@@ -172,8 +158,8 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     Runnable run = new Runnable() {
         @Override public void run() {
             Log.d("seek", "update");
-            if (mediaPlayer != null)
-                setTime(mediaPlayer.getCurrentPosition(), tvCurDuration);
+            activity.getCurrentPosition();
+            setTime(activity.currentPosition, tvCurDuration);
             seekUpdation();
         }
     };
@@ -181,10 +167,13 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     private void seekUpdation() {
         Log.d("seek", "update");
         Log.d("seek", "before update" + seekBar.getProgress());
+
+        activity.getDuration();
+        activity.getCurrentPosition();
+
         seekBar.setProgress(0); // call these two methods before setting progress.
-        seekBar.setMax(mediaPlayer.getDuration());
-        seekBar.setProgress(mediaPlayer.getCurrentPosition());
-        //seekBar.setProgress(mediaPlayer.getCurrentPosition());
+        seekBar.setMax(activity.duration);
+        seekBar.setProgress(activity.currentPosition);
         Log.d("seek", "after update" + seekBar.getProgress());
         seekHandler.postDelayed(run, 1000);
     }
@@ -216,31 +205,20 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
                 ImageButton view = (ImageButton) v;
 
                 view.startAnimation(buttonClick);
-                if (!mediaPlayer.isPlaying()) {
-                    mediaPlayer.start();
+
+                if (!activity.isPlaying) {
+                    Log.d("my", "play fragment");
+                    activity.play();
                     view.setImageResource(R.drawable.pause_b);
                 } else {
-                    mediaPlayer.pause();
+                    Log.d("my", "pause fragment");
+                    activity.pause();
                     view.setImageResource(R.drawable.play_b);
                 }
                 break;
             case R.id.next_button:
                 v.startAnimation(buttonClick);
-                if (songsList == null)
-                    return;
-                int count = songsList.size();
-
-                Song nextSong;
-                Log.d("pos", "onClickNext" + position);
-                if (position < count - 1){
-                    position++;
-                }
-                else if (position == count - 1) {
-                    position = 0;
-                }
-                Log.d("pos", "onSelectNext" + position);
-                nextSong = songsList.get(position);
-                setSong(nextSong, false);
+                nextSong();
                 break;
             case R.id.prev_button:
                 v.startAnimation(buttonClick);
@@ -413,7 +391,18 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         imageView.setImageMatrix(new Matrix());
 
         //mediaPlayer = MediaPlayer.create(inflater.getContext(), Uri.parse(song.Data));
-        try {
+
+        activity = (MainActivity)getActivity();
+
+        activity.setSong(song);
+        Log.d("my", "set song fragment");
+        playButton.setImageResource(R.drawable.pause_b);
+
+        activity.getDuration();
+        seekBar.setMax(activity.duration);
+        setTime(activity.duration, tvFullDuration);
+
+        /*try {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(song.Data);
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -432,7 +421,7 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
             mediaPlayer.prepareAsync();
         } catch (Exception e){
             Log.d("Er", "Error");
-        }
+        }*/
 
     }
 

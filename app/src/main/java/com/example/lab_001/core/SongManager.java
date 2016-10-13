@@ -267,5 +267,12 @@ public class SongManager {
 
         return genres;
     }
+
+    public void deleteSong(SQLiteDatabase db, Song song){
+        String deleteQuery = "DELETE FROM " +
+                "songs" +
+                " WHERE " + DatabaseHelper.DATA_COLUMN + " = '" + song.Data + "'";
+        db.execSQL(deleteQuery);
+    }
 }
 
