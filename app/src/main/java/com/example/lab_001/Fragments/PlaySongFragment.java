@@ -27,6 +27,7 @@ package com.example.lab_001.Fragments;
         import android.widget.ImageView;
         import android.widget.SeekBar;
         import android.widget.TextView;
+        import android.widget.Toast;
 
         import com.example.lab_001.BackgroundSoundService;
         import com.example.lab_001.MainActivity;
@@ -110,9 +111,9 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                seekBar.setProgress(progress);
                 if (fromUser) {
                     activity.seekTo(progress);
+                    seekBar.setProgress(progress);
                 }
             }
 
@@ -144,7 +145,8 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         setOnTouch(prevButton);
         setOnTouch(nextButton);
 
-        playButton.setOnClickListener(this);
+        //playButton.setOnClickListener(this);
+        //playButton.setOnTouchListener(this);
         nextButton.setOnClickListener(this);
         prevButton.setOnClickListener(this);
 
@@ -154,12 +156,9 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         return view;
     }
 
-
     Runnable run = new Runnable() {
         @Override public void run() {
             Log.d("seek", "update");
-            activity.getCurrentPosition();
-            setTime(activity.currentPosition, tvCurDuration);
             seekUpdation();
         }
     };
@@ -167,15 +166,14 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
     private void seekUpdation() {
         Log.d("seek", "update");
         Log.d("seek", "before update" + seekBar.getProgress());
-
-        activity.getDuration();
+        //activity.getDuration();
         activity.getCurrentPosition();
-
         seekBar.setProgress(0); // call these two methods before setting progress.
         seekBar.setMax(activity.duration);
         seekBar.setProgress(activity.currentPosition);
+        setTime(activity.currentPosition, tvCurDuration);
         Log.d("seek", "after update" + seekBar.getProgress());
-        seekHandler.postDelayed(run, 1000);
+        seekHandler.postDelayed(run, 100);
     }
 
     private void nextSong(){
@@ -242,6 +240,15 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         }
     }
 
+    private boolean isAClick(float startX, float endX, float startY, float endY){
+        float differenceX = Math.abs(startX - endX);
+        float differenceY = Math.abs(startY - endY);
+        if (differenceX > 5 || differenceY > 5)
+            return false;
+        return true;
+    }
+    private float startX;
+    private float startY;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         imageView.setScaleType(ImageView.ScaleType.MATRIX);
@@ -329,6 +336,34 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.play_button){
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            startX = event.getX();
+                            startY = event.getY();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            float endX = event.getX();
+                            float endY = event.getY();
+                            if (isAClick(startX, endX, startY, endY)){
+                                ImageButton view = (ImageButton) v;
+
+                                view.startAnimation(buttonClick);
+
+                                if (!activity.isPlaying) {
+                                    Log.d("my", "play fragment");
+                                    activity.play();
+                                    view.setImageResource(R.drawable.pause_b);
+                                } else {
+                                    Log.d("my", "pause fragment");
+                                    activity.pause();
+                                    view.setImageResource(R.drawable.play_b);
+                                }
+                            }
+                            break;
+                    }
+                }
+
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         ImageButton view = (ImageButton) v;
@@ -398,7 +433,7 @@ public class PlaySongFragment extends Fragment implements OnTouchListener, View.
         Log.d("my", "set song fragment");
         playButton.setImageResource(R.drawable.pause_b);
 
-        activity.getDuration();
+        activity.duration = Integer.parseInt(song.Duration);
         seekBar.setMax(activity.duration);
         setTime(activity.duration, tvFullDuration);
 

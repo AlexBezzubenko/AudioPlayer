@@ -145,14 +145,14 @@ public class SongItemAdapterCached extends ArrayAdapter<Song> {
                     mHolder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 }
                 else {
-                    /*String myCloud = "http://res.cloudinary.com/dyuwhmiwj/image/upload/v1476200292/default_album_cefhqf.jpg";
+                    String myCloud = "http://res.cloudinary.com/dyuwhmiwj/image/upload/v1476200292/default_album_cefhqf.jpg";
                     String noCachePath = "https://pixabay.com/static/uploads/photo/2016/06/01/09/21/music-1428660_960_720.jpg";
                     Picasso.with(context).load(noCachePath)
                     .resize(50, 50).error(R.mipmap.ic_launcher).networkPolicy(NetworkPolicy.NO_CACHE,
                             NetworkPolicy.NO_STORE).memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE).into(mHolder.imageView);
-                    */
 
-                    Picasso.with(context).load(R.mipmap.ic_launcher).into(mHolder.imageView);
+
+                    //Picasso.with(context).load(R.mipmap.ic_launcher).into(mHolder.imageView);
 
                     //mHolder.imageView.setImageResource(R.mipmap.ic_launcher);
                 }

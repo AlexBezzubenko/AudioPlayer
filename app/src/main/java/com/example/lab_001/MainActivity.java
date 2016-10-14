@@ -67,7 +67,7 @@ public class MainActivity extends FragmentActivity {
                 case BackgroundSoundService.MSG_GET_IS_PLAYING:
                     Bundle bundle = msg.getData();
                     isPlaying = bundle.getBoolean(BackgroundSoundService.IS_PLAYING);
-                    Toast.makeText(getApplicationContext(), "isPlaying " + isPlaying, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "isPlaying " + isPlaying, Toast.LENGTH_SHORT).show();
                     break;
                 case BackgroundSoundService.MSG_GET_DURATION:
                     duration = msg.arg1;
@@ -100,7 +100,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getApplicationContext().deleteDatabase("mydatabase.db");
+        //getApplicationContext().deleteDatabase("mydatabase.db");
 
         mDatabaseHelper = new DatabaseHelper(this, "mydatabase.db", null, 1);
         mSqLiteDatabase = mDatabaseHelper.getWritableDatabase();

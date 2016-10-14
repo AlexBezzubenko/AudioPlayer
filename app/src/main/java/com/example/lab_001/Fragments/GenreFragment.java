@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,9 +27,10 @@ import com.example.lab_001.core.Genre;
 import com.example.lab_001.core.Song;
 
 
-public class GenreFragment extends Fragment {
+public class GenreFragment extends Fragment{
     ArrayList<String> genresList = new ArrayList<>();
     ViewPager viewPager;
+    ListView genreListView;
 
     public GenreFragment(){
         super();
@@ -42,7 +44,7 @@ public class GenreFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.genre_fragment, null);
 
-        final ListView genreListView = (ListView) view.findViewById(R.id.genre_list_view);
+        genreListView = (ListView) view.findViewById(R.id.genre_list_view);
         Drawable background = genreListView.getBackground();
         background.setAlpha(50);
 
@@ -63,4 +65,6 @@ public class GenreFragment extends Fragment {
 
         return view;
     }
+
+
 }
